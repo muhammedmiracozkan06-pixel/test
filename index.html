@@ -1,142 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wmail SSO Test Client</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>WMail Login</title>
+
     <style>
-        :root {
-            --primary-neon: #00ffcc;
-            --matrix-dark: #0a0a0c;
-            --microsoft-blue: #0067b8;
-        }
         body {
-            background-color: var(--matrix-dark);
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .test-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 255, 204, 0.2);
-            padding: 30px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 450px;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
             text-align: center;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.05);
+            padding-top: 100px;
         }
-        h2 { color: var(--primary-neon); margin-bottom: 5px; }
-        p.subtitle { color: #a0a0a0; font-size: 13px; margin-top: 0; margin-bottom: 25px; }
-        .info-box {
-            background: rgba(0, 0, 0, 0.4);
-            border-left: 3px solid var(--primary-neon);
-            padding: 15px;
-            text-align: left;
+
+        h2 {
             margin-bottom: 20px;
-            font-family: monospace;
         }
-        .info-line { margin-bottom: 10px; font-size: 13px; }
-        .info-line span { color: var(--primary-neon); }
-        .btn {
-            background: var(--microsoft-blue);
+
+        button {
+            background: #2563eb;
             color: white;
             border: none;
             padding: 12px 20px;
-            width: 100%;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: inline-block;
-            box-sizing: border-box;
+            font-size: 16px;
         }
-        .btn:hover { background: #005293; }
-        .success-badge {
-            color: var(--primary-neon);
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border: 1px solid var(--primary-neon);
-            padding: 3px 8px;
-            display: inline-block;
-            margin-bottom: 15px;
+
+        button:hover {
+            background: #1d4ed8;
         }
     </style>
 </head>
 <body>
 
-    <div class="test-card">
-        <h2>Wmail SSO Test Client</h2>
-        <p class="subtitle">Wind Developers Cross-Platform Integration Hub</p>
+<h2 id="userText">Giriş yapılmadı</h2>
+<button id="wmail-sso-trigger">WMail ile Giriş Yap</button>
 
-        <div id="logged-out-state">
-            <p style="font-size: 14px; color: #cccccc; margin-bottom: 25px;">
-                Merkez üssüyle güvenli bağlantı kurmak ve kimliğinizi doğrulamak için aşağıdaki butona basın.
-            </p>
-            <button id="login-trigger-btn" class="btn"><i class="fas fa-sign-in-alt"></i> Wmail ile Oturum Aç</button>
-        </div>
+<script>
+// ===============================
+// 1. LOGIN FUNCTION
+// ===============================
+function initiateWmailLogin(apiKey, customRedirectUrl) {
+    if (!apiKey) {
+        console.error("API Key gerekli!");
+        return;
+    }
 
-        <div id="logged-in-state" style="display: none;">
-            <div class="success-badge">CONNECTION ESTABLISHED</div>
-            
-            <div class="info-box">
-                <div class="info-line">User: <span id="user-display-name">Loading...</span></div>
-                <div class="info-line">Mail: <span id="user-display-email">Loading...</span></div>
-                <div class="info-line" style="word-break: break-all;">Token: <span id="user-display-token" style="color: #ff4d4d;">Loading...</span></div>
-            </div>
+    const targetRedirect = customRedirectUrl || (window.location.origin + window.location.pathname);
+    const encodedRedirect = encodeURIComponent(targetRedirect);
+    const encodedApiKey = encodeURIComponent(apiKey);
 
-            <button id="reset-test-btn" class="btn" style="background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d;"><i class="fas fa-power-off"></i> Testi Sıfırla</button>
-        </div>
-    </div>
+    window.location.href = `https://authwmail.vercel.app?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
+}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const loggedOutState = document.getElementById("logged-out-state");
-            const loggedInState = document.getElementById("logged-in-state");
-            
-            // URL Parametrelerini Çözümleme
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get("status");
-            const username = urlParams.get("username");
-            const email = urlParams.get("email");
-            const token = urlParams.get("token");
+// ===============================
+// 2. BUTTON CLICK
+// ===============================
+document.getElementById("wmail-sso-trigger").addEventListener("click", () => {
+    const MY_API_KEY = "WMAIL-KEY-RYAFO6U2V-89716";
+    initiateWmailLogin(MY_API_KEY);
+});
 
-            // Eğer ana kapıdan (authwmail.vercel.app) başarılı giriş yapılıp geri fırlatıldıysak
-            if (status === "success" && username && email) {
-                loggedOutState.style.display = "none";
-                loggedInState.style.display = "block";
+// ===============================
+// 3. RESPONSE PARSE
+// ===============================
+const params = new URLSearchParams(window.location.search);
 
-                // Gelen ham URL verilerini çözüp ekrana basıyoruz
-                document.getElementById("user-display-name").innerText = decodeURIComponent(username);
-                document.getElementById("user-display-email").innerText = decodeURIComponent(email);
-                document.getElementById("user-display-token").innerText = token;
-            }
+const status = params.get("status");
+const username = params.get("username");
+const email = params.get("email");
 
-            // Oturum Aç Butonu Tetikleyicisi
-            document.getElementById("login-trigger-btn").addEventListener("click", () => {
-                // Aktif ettiğin güncel API anahtarın
-                const apiKey = "WMAIL-KEY-RYAFO6U2V-89716"; 
-                
-                // Bu test kodunun çalıştığı domain adresini otomatik olarak yakalar (Geri dönüş adresi)
-                const currentRedirectUrl = window.location.origin + window.location.pathname;
+if (status === "success" && username) {
+    const userData = {
+        username,
+        email
+    };
 
-                // 🌐 KRİTİK DEĞİŞİKLİK: Kullanıcıyı doğrudan canlı authwmail.vercel.app adresine fırlatıyoruz!
-                window.location.href = `https://authwmail.vercel.app?redirect=${encodeURIComponent(currentRedirectUrl)}&apikey=${apiKey}`;
-            });
+    localStorage.setItem("wmail_user", JSON.stringify(userData));
 
-            // Test Sıfırlama Butonu
-            document.getElementById("reset-test-btn").addEventListener("click", () => {
-                window.location.href = window.location.pathname;
-            });
-        });
-    </script>
+    document.getElementById("userText").innerText =
+        `Hoşgeldin, ${username} 😎`;
+
+    // URL temizle
+    window.history.replaceState({}, document.title, window.location.pathname);
+} else {
+    const saved = localStorage.getItem("wmail_user");
+
+    if (saved) {
+        const user = JSON.parse(saved);
+        document.getElementById("userText").innerText =
+            `Hoşgeldin tekrar, ${user.username} 🔥`;
+    }
+}
+</script>
+
 </body>
 </html>
