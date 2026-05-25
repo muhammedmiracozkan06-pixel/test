@@ -107,7 +107,7 @@
         window.location.href = `${WMAIL_GATEWAY_URL}?redirect=${encodeURIComponent(currentUrl)}&apikey=${WMAIL_API_KEY}`;
     }
 
-    // 📥 2. Sayfa Yüklendiğinde URL parametrelerini (Vercel'den geri dönen verileri) Yakalama
+    // 📥 2. Sayfa Yüklendiğinde URL parametrelerini Yakalama
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         
@@ -116,9 +116,9 @@
             const username = urlParams.get('username');
             const email = urlParams.get('email');
             
-            // Arayüzü değiştir kanka, oturum açma kutusunu gizle, ismi tam ortada patlat!
+            // 🛠️ HATA DÜZELTİLDİ: Tek .style ile görünür yapıyoruz kanka
             document.getElementById('logged-out-view').style.display = 'none';
-            document.getElementById('logged-in-view').style.style.display = 'block';
+            document.getElementById('logged-in-view').style.display = 'block';
             
             document.getElementById('display-name').innerText = username;
             document.getElementById('display-email').innerText = email;
@@ -130,10 +130,9 @@
 
     // 🚪 3. Çıkış Yapma Protokolü
     function logout() {
-        // Sayfayı yenileyerek sistemi ilk haline döndürür
         window.location.href = window.location.pathname;
     }
 </script>
-
+    
 </body>
 </html>
