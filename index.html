@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wmail SSO - Test Sayfası</title>
+    <title>Harici Uygulama - Wmail Giriş Testi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -137,10 +137,10 @@
         
         <div id="login-screen">
             <div class="gateway-icon">
-                <i class="fas fa-shield-alt"></i>
+                <i class="fas fa-cubes"></i>
             </div>
-            <h1>Uygulamaya Giriş Yap</h1>
-            <p>Devam etmek için güvenli Wmail Central Identity Gateway altyapısını kullanarak oturum açın.</p>
+            <h1>Harici Uygulamaya Giriş Yap</h1>
+            <p>Bu harici proje Wmail Altyapısını Kullanmaktadır. Güvenle oturum açmak için butona basın.</p>
             
             <button id="wmail-sso-trigger" class="btn-sso">
                 <i class="fas fa-sign-in-alt"></i> Wmail ile Oturum Aç
@@ -152,48 +152,48 @@
                 <i class="far fa-user"></i>
             </div>
             <div id="user-display-name" class="welcome-title">Yükleniyor...</div>
-            <div id="user-display-email" class="user-email">wmail adresi...</div>
+            <div id="user-display-email" class="user-email">Adres yükleniyor...</div>
             
             <button id="logout-trigger" class="btn-logout">
-                <i class="fas fa-power-off"></i> Oturumu Kapat
+                <i class="fas fa-power-off"></i> Oturumu Kapat (URL'yi Sıfırla)
             </button>
         </div>
 
     </div>
 
     <script>
-        // 🛠️ CONFIG: Senin ana uygulamanın adresi ve istediğin test anahtarı
+        // 🛠️ CONFIG MAPPING
         const WMAIL_GATEWAY_URL = "https://authwmail.vercel.app";
         const MY_API_KEY = "WMAIL-KEY-8E65XZ6TE-32975";
 
-        // Butona tıklandığında gateway'e yönlendirme yapısı
+        // Harici siteden Wmail Gateway'e fırlatma motoru
         document.getElementById("wmail-sso-trigger").addEventListener("click", () => {
-            // Kullanıcının o an bu test sayfasını hangi URL'de açtığını otomatik yakalar
+            // Harici sitenin o an çalıştığı URL'yi (örn: https://myproject.site/) tam olarak yakalar.
             const currentUrl = window.location.origin + window.location.pathname;
             
             const encodedRedirect = encodeURIComponent(currentUrl);
             const encodedApiKey = encodeURIComponent(MY_API_KEY);
             
-            // Tam istediğin formatta gateway'e paslıyoruz
+            // Tam istediğin dinamik parametre formatıyla fırlatıyoruz
             window.location.href = `${WMAIL_GATEWAY_URL}?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
         });
 
-        // Sayfa yüklendiğinde URL parametrelerini kontrol eden listener
+        // 🎯 HARİCİ SİTENİN URL PARAMETRELERİNİ OKUYUP EKRANA BASAN KATMAN
         window.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
             const username = urlParams.get('username');
             const email = urlParams.get('email');
 
-            // Eğer veritabanından başarıyla dönüldüyse ve isim geldiyse
+            // Eğer Wmail başarılı olduysa ve bu harici sitenin URL'sine verileri pasladıysa:
             if (status === 'success' && username) {
-                // Giriş buton ekranını uçur
+                // Giriş ekranını temizle
                 document.getElementById("login-screen").style.display = "none";
                 
-                // Karşılama ekranını göster
+                // Karşılama ekranını aç
                 document.getElementById("welcome-screen").style.display = "block";
                 
-                // URL'den gelen GERÇEK veriyi ekrana basıyoruz
+                // 🚀 ARTIK BU HARİCİ SİTENİN URL'SİNDEKİ GERÇEK VERİYİ EKRANA BASIYORUZ!
                 const gercekIsim = decodeURIComponent(username);
                 document.getElementById("user-display-name").innerText = `Hoş geldin, ${gercekIsim}!`;
                 
@@ -203,7 +203,7 @@
             }
         });
 
-        // Testi sıfırlamak ve parametreleri temizlemek için çıkış yap butonu
+        // Testi temizleyip başa sarmak için çıkış butonu
         document.getElementById("logout-trigger").addEventListener("click", () => {
             window.location.href = window.location.origin + window.location.pathname;
         });
