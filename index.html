@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harici Uygulama - Wmail Giriş Testi</title>
+    <title>Wmail SSO - Test Gateway</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0c0d12;
-            --card-bg: #14161f;
-            --primary-neon: #00ffcc;
-            --microsoft-blue: #0067b8;
-            --text-main: #ffffff;
+            --bg-color: #0c0f17;
+            --card-bg: #141923;
+            --accent-color: #00ffcc;
+            --text-color: #ffffff;
             --text-muted: #8a8a93;
-            --border-color: rgba(255, 255, 255, 0.05);
+            --btn-blue: #0067b8;
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
-            color: var(--text-main);
+            color: var(--text-color);
             font-family: 'Segoe UI', system-ui, sans-serif;
             display: flex;
             justify-content: center;
@@ -29,184 +28,154 @@
         }
 
         .test-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 8px;
             width: 100%;
             max-width: 450px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
             text-align: center;
-            box-sizing: border-box;
-        }
-
-        .gateway-icon {
-            font-size: 50px;
-            color: var(--primary-neon);
-            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         h1 {
-            font-size: 22px;
-            margin: 0 0 10px 0;
+            font-size: 24px;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
         p {
-            font-size: 14px;
             color: var(--text-muted);
-            margin: 0 0 30px 0;
+            font-size: 14px;
+            margin-bottom: 30px;
             line-height: 1.5;
         }
 
-        .btn-sso {
-            background: var(--microsoft-blue);
+        .sso-btn {
+            background: var(--btn-blue);
             color: white;
             border: none;
-            padding: 15px 25px;
-            width: 100%;
-            font-size: 15px;
+            padding: 12px 24px;
+            font-size: 14px;
             font-weight: bold;
-            border-radius: 6px;
             cursor: pointer;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.2s;
+            transition: background 0.2s;
+            border-bottom: 2px solid rgba(0,0,0,0.2);
         }
 
-        .btn-sso:hover {
-            background: #005a9e;
-            box-shadow: 0 0 15px rgba(0, 103, 184, 0.4);
+        .sso-btn:hover {
+            background: #0078d4;
         }
 
-        .welcome-screen {
+        .success-box {
+            border: 1px dashed rgba(0, 255, 204, 0.3);
+            background: rgba(0, 255, 204, 0.03);
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
             display: none;
         }
 
-        .user-avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: rgba(0, 255, 204, 0.1);
-            border: 2px solid var(--primary-neon);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 35px;
-            color: var(--primary-neon);
-            margin: 0 auto 20px auto;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-        }
-
-        .welcome-title {
-            font-size: 26px;
-            color: var(--primary-neon);
-            margin: 0 0 8px 0;
-            font-weight: 700;
+        .user-name {
+            color: var(--accent-color);
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
         }
 
         .user-email {
             font-family: monospace;
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .btn-logout {
-            background: transparent;
-            border: 1px solid rgba(255, 77, 77, 0.4);
-            color: #ff4d4d;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
+            color: #ccc;
             font-size: 13px;
-            transition: all 0.2s;
         }
 
-        .btn-logout:hover {
-            background: rgba(255, 77, 77, 0.1);
-            border-color: #ff4d4d;
+        .token-info {
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 15px;
+            word-break: break-all;
+            background: rgba(0,0,0,0.2);
+            padding: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="test-container">
+        <div style="margin-bottom: 20px;">
+            <i class="fas fa-network-wired" style="color: var(--accent-color); font-size: 40px;"></i>
+        </div>
         
-        <div id="login-screen">
-            <div class="gateway-icon">
-                <i class="fas fa-cubes"></i>
-            </div>
-            <h1>Harici Uygulamaya Giriş Yap</h1>
-            <p>Bu harici proje Wmail Altyapısını Kullanmaktadır. Güvenle oturum açmak için butona basın.</p>
+        <h1>Remote Client App</h1>
+        <p>Wmail SSO entegrasyonunu ve API anahtarını doğrulamak için aşağıdaki butonu kullanın.</p>
+
+        <button id="wmail-sso-trigger" class="sso-btn">
+            <i class="fas fa-shield-alt"></i> Wmail Identity ile Bağlan
+        </button>
+
+        <div id="success-panel" class="success-box">
+            <i class="far fa-check-circle" style="color: var(--accent-color); font-size: 30px;"></i>
+            <div style="margin-top: 10px; font-size: 12px; color: var(--text-muted);">Giriş Başarılı!</div>
+            <div id="display-name" class="user-name">-</div>
+            <div id="display-email" class="user-email">-</div>
+            <div id="display-token" class="token-info">Token: -</div>
             
-            <button id="wmail-sso-trigger" class="btn-sso">
-                <i class="fas fa-sign-in-alt"></i> Wmail ile Oturum Aç
+            <button onclick="logout()" style="margin-top: 20px; background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 6px 12px; cursor: pointer; font-size: 12px;">
+                Oturumu Kapat
             </button>
         </div>
-
-        <div id="welcome-screen" class="welcome-screen">
-            <div class="user-avatar">
-                <i class="far fa-user"></i>
-            </div>
-            <div id="user-display-name" class="welcome-title">Yükleniyor...</div>
-            <div id="user-display-email" class="user-email">Adres yükleniyor...</div>
-            
-            <button id="logout-trigger" class="btn-logout">
-                <i class="fas fa-power-off"></i> Oturumu Kapat (URL'yi Sıfırla)
-            </button>
-        </div>
-
     </div>
 
     <script>
-        // 🛠️ CONFIG MAPPING
-        const WMAIL_GATEWAY_URL = "https://authwmail.vercel.app";
-        const MY_API_KEY = "WMAIL-KEY-8E65XZ6TE-32975";
+        // Senin aldığın aktif API anahtarı
+        const MY_API_KEY = "WMAIL-KEY-VUHLUF7WS-88538";
 
-        // Harici siteden Wmail Gateway'e fırlatma motoru
+        // 1. ADIM: Wmail SSO Giriş Rutinini Başlatma
         document.getElementById("wmail-sso-trigger").addEventListener("click", () => {
-            // Harici sitenin o an çalıştığı URL'yi (örn: https://myproject.site/) tam olarak yakalar.
-            const currentUrl = window.location.origin + window.location.pathname;
+            // Kullanıcı giriş yaptıktan sonra bu test sayfasına geri dönecek
+            const currentRedirectUrl = window.location.origin + window.location.pathname;
             
-            const encodedRedirect = encodeURIComponent(currentUrl);
+            const encodedRedirect = encodeURIComponent(currentRedirectUrl);
             const encodedApiKey = encodeURIComponent(MY_API_KEY);
             
-            // Tam istediğin dinamik parametre formatıyla fırlatıyoruz
-            window.location.href = `${WMAIL_GATEWAY_URL}?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
+            // Kullanıcıyı Wmail Gateway sayfana yönlendiriyoruz
+            window.location.href = `https://authwmail.vercel.app?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
         });
 
-        // 🎯 HARİCİ SİTENİN URL PARAMETRELERİNİ OKUYUP EKRANA BASAN KATMAN
-        window.addEventListener("DOMContentLoaded", () => {
+        // 2. ADIM: URL Parametrelerini Dinleme ve İsmi Ekrana Yazdırma
+        window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
             const username = urlParams.get('username');
             const email = urlParams.get('email');
+            const token = urlParams.get('token');
 
-            // Eğer Wmail başarılı olduysa ve bu harici sitenin URL'sine verileri pasladıysa:
+            // Eğer Wmail yönlendirmesinden gelen başarı parametreleri varsa
             if (status === 'success' && username) {
-                // Giriş ekranını temizle
-                document.getElementById("login-screen").style.display = "none";
+                // Giriş butonunu gizle, başarı panelini göster
+                document.getElementById("wmail-sso-trigger").style.display = "none";
+                document.getElementById("success-panel").style.display = "block";
+
+                // URL'den gelen verileri çözüp ekrana bas
+                document.getElementById("display-name").innerText = decodeURIComponent(username);
+                document.getElementById("display-email").innerText = decodeURIComponent(email);
+                document.getElementById("display-token").innerText = "Authorized Token: " + decodeURIComponent(token);
                 
-                // Karşılama ekranını aç
-                document.getElementById("welcome-screen").style.display = "block";
-                
-                // 🚀 ARTIK BU HARİCİ SİTENİN URL'SİNDEKİ GERÇEK VERİYİ EKRANA BASIYORUZ!
-                const gercekIsim = decodeURIComponent(username);
-                document.getElementById("user-display-name").innerText = `Hoş geldin, ${gercekIsim}!`;
-                
-                if (email) {
-                    document.getElementById("user-display-email").innerText = decodeURIComponent(email);
-                }
+                // URL'deki parametreleri temizle (Hoş bir görüntü için)
+                window.history.pushState({}, '', window.location.origin + window.location.pathname);
             }
         });
 
-        // Testi temizleyip başa sarmak için çıkış butonu
-        document.getElementById("logout-trigger").addEventListener("click", () => {
+        // Test amaçlı local çıkış fonksiyonu
+        function logout() {
             window.location.href = window.location.origin + window.location.pathname;
-        });
+        }
     </script>
 </body>
 </html>
