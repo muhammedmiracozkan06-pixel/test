@@ -1,180 +1,218 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wmail SSO - Test Gateway</title>
+    <title>Wmail API Integration Test Gateway</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0c0f17;
-            --card-bg: #141923;
-            --accent-color: #00ffcc;
-            --text-color: #ffffff;
+            --bg-dark: #0a0a0d;
+            --card-bg: #11141c;
+            --primary-neon: #00ffcc;
             --text-muted: #8a8a93;
-            --btn-blue: #0067b8;
+            --border-color: rgba(255, 255, 255, 0.08);
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Segoe UI', -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        .test-container {
+        /* Test Kartı */
+        .test-card {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
             padding: 40px;
-            border-radius: 8px;
             width: 100%;
-            max-width: 450px;
+            max-width: 380px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--primary-neon);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        p {
+        .subtitle {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            font-size: 14px;
             margin-bottom: 30px;
-            line-height: 1.5;
         }
 
-        .sso-btn {
-            background: var(--btn-blue);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
+        /* Profil Alanı Stilleri */
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .avatar-holder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid var(--primary-neon);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: background 0.2s;
-            border-bottom: 2px solid rgba(0,0,0,0.2);
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
         }
 
-        .sso-btn:hover {
-            background: #0078d4;
+        .avatar-holder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .success-box {
-            border: 1px dashed rgba(0, 255, 204, 0.3);
-            background: rgba(0, 255, 204, 0.03);
-            padding: 20px;
-            border-radius: 4px;
-            margin-top: 20px;
-            display: none;
+        .avatar-holder i {
+            font-size: 40px;
+            color: var(--text-muted);
         }
 
         .user-name {
-            color: var(--accent-color);
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 5px 0 0 0;
+            color: #ffffff;
         }
 
         .user-email {
             font-family: monospace;
-            color: #ccc;
-            font-size: 13px;
+            font-size: 0.95rem;
+            color: var(--primary-neon);
+            background: rgba(0, 255, 204, 0.05);
+            padding: 6px 12px;
+            border: 1px dashed rgba(0, 255, 204, 0.2);
+            margin: 0;
         }
 
-        .token-info {
-            font-family: monospace;
+        /* Butonlar */
+        .api-btn {
+            width: 100%;
+            padding: 12px;
+            background: #0067b8;
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .api-btn:hover {
+            background: #005da6;
+        }
+
+        .status-badge {
             font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 15px;
-            word-break: break-all;
-            background: rgba(0,0,0,0.2);
-            padding: 5px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #ff4d4d;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .status-success {
+            color: var(--primary-neon);
         }
     </style>
 </head>
 <body>
 
-    <div class="test-container">
-        <div style="margin-bottom: 20px;">
-            <i class="fas fa-network-wired" style="color: var(--accent-color); font-size: 40px;"></i>
+    <div class="test-card">
+        <h1>Wmail Integration Test</h1>
+        <p class="subtitle">App Environment Authorization Gateway</p>
+
+        <div id="app-state-area">
+            <span id="status-text" class="status-badge">App Disconnected</span>
+            <button class="api-btn" id="connect-btn"><i class="fas fa-plug"></i> Connect via Wmail SSO</button>
         </div>
-        
-        <h1>Remote Client App</h1>
-        <p>Wmail SSO entegrasyonunu ve API anahtarını doğrulamak için aşağıdaki butonu kullanın.</p>
 
-        <button id="wmail-sso-trigger" class="sso-btn">
-            <i class="fas fa-shield-alt"></i> Wmail Identity ile Bağlan
-        </button>
-
-        <div id="success-panel" class="success-box">
-            <i class="far fa-check-circle" style="color: var(--accent-color); font-size: 30px;"></i>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--text-muted);">Giriş Başarılı!</div>
-            <div id="display-name" class="user-name">-</div>
-            <div id="display-email" class="user-email">-</div>
-            <div id="display-token" class="token-info">Token: -</div>
+        <div id="profile-area" class="profile-container" style="display: none;">
+            <span class="status-badge status-success">Handshake Secured</span>
             
-            <button onclick="logout()" style="margin-top: 20px; background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 6px 12px; cursor: pointer; font-size: 12px;">
-                Oturumu Kapat
-            </button>
+            <div class="avatar-holder">
+                <img id="user-avatar" src="https://ui-avatars.com/api/?background=11141c&color=00ffcc&bold=true&name=W" alt="Profile Photo">
+            </div>
+
+            <div class="user-name" id="user-display-name">Loading...</div>
+
+            <div class="user-email" id="user-display-email">loading@wmail.com</div>
+            
+            <button class="api-btn" id="clear-session-btn" style="background: rgba(255,77,77,0.1); border: 1px solid #ff4d4d; color: #ff4d4d; margin-top: 25px;">Clear Session</button>
         </div>
     </div>
 
     <script>
-        // Senin aldığın aktif API anahtarı
-        const MY_API_KEY = "WMAIL-KEY-VUHLUF7WS-88538";
+        // Sizin Canlı Vercel API Key Tanımlaması ve Redirect URL Belirleme
+        const WMAIL_API_KEY = "WMAIL-KEY-C4SGBIT77-75653";
+        // Canlıda veya lokalde çalışırken redirect parametresini otomatik algılar
+        const APP_REDIRECT_URL = window.location.origin + window.location.pathname;
 
-        // 1. ADIM: Wmail SSO Giriş Rutinini Başlatma
-        document.getElementById("wmail-sso-trigger").addEventListener("click", () => {
-            // Kullanıcı giriş yaptıktan sonra bu test sayfasına geri dönecek
-            const currentRedirectUrl = window.location.origin + window.location.pathname;
-            
-            const encodedRedirect = encodeURIComponent(currentRedirectUrl);
-            const encodedApiKey = encodeURIComponent(MY_API_KEY);
-            
-            // Kullanıcıyı Wmail Gateway sayfana yönlendiriyoruz
-            window.location.href = `https://authwmail.vercel.app?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
-        });
+        const connectBtn = document.getElementById('connect-btn');
+        const clearSessionBtn = document.getElementById('clear-session-btn');
+        const appStateArea = document.getElementById('app-state-area');
+        const profileArea = document.getElementById('profile-area');
 
-        // 2. ADIM: URL Parametrelerini Dinleme ve İsmi Ekrana Yazdırma
+        // URL'den dönen SSO parametrelerini kontrol etme paneli
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
             const username = urlParams.get('username');
             const email = urlParams.get('email');
-            const token = urlParams.get('token');
 
-            // Eğer Wmail yönlendirmesinden gelen başarı parametreleri varsa
-            if (status === 'success' && username) {
-                // Giriş butonunu gizle, başarı panelini göster
-                document.getElementById("wmail-sso-trigger").style.display = "none";
-                document.getElementById("success-panel").style.display = "block";
+            if (status === 'success' && username && email) {
+                // Giriş başarılı veriler geldi! Girdi alanlarını doldur ve göster
+                appStateArea.style.display = 'none';
+                profileArea.style.display = 'flex';
 
-                // URL'den gelen verileri çözüp ekrana bas
-                document.getElementById("display-name").innerText = decodeURIComponent(username);
-                document.getElementById("display-email").innerText = decodeURIComponent(email);
-                document.getElementById("display-token").innerText = "Authorized Token: " + decodeURIComponent(token);
+                document.getElementById('user-display-name').innerText = decodeURIComponent(username);
+                document.getElementById('user-display-email').innerText = decodeURIComponent(email);
                 
-                // URL'deki parametreleri temizle (Hoş bir görüntü için)
-                window.history.pushState({}, '', window.location.origin + window.location.pathname);
+                // İsteğe bağlı: İsme özel dinamik avatar oluşturucu
+                document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?background=141821&color=00ffcc&bold=true&size=128&name=${username}`;
             }
         });
 
-        // Test amaçlı local çıkış fonksiyonu
-        function logout() {
-            window.location.href = window.location.origin + window.location.pathname;
+        // Wmail SSO Tetikleme Fonksiyonu
+        if (connectBtn) {
+            connectBtn.addEventListener('click', () => {
+                const encodedRedirect = encodeURIComponent(APP_REDIRECT_URL);
+                const encodedApiKey = encodeURIComponent(WMAIL_API_KEY);
+                
+                // Kendi authwmail vercel adresini buraya yazıyorsun kanka:
+                const wmailAuthGateway = `https://authwmail.vercel.app/?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
+                
+                // Eğer lokalde test ediyorsan geçici olarak alttakini açabilirsin:
+                // const wmailAuthGateway = `http://localhost:5000/?redirect=${encodedRedirect}&apikey=${encodedApiKey}`;
+
+                window.location.href = wmailAuthGateway;
+            });
+        }
+
+        // Test Oturumunu Kapatma
+        if (clearSessionBtn) {
+            clearSessionBtn.addEventListener('click', () => {
+                window.location.href = window.location.origin + window.location.pathname;
+            });
         }
     </script>
 </body>
